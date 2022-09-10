@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        function Multiply() {
+            var val1 = document.getElementById("val1").value;
+            var val2 = document.getElementById("val2").value;
+            var result = document.getElementById("varOut");
+
+            var v1 = parseFloat(val1);
+            var v2 = parseFloat(val2);
+
+            var output = v1 * v2;
+
+            result.innerHTML = output;
+            var x = parseInt("123");
+            var y = 124;
+            var z = x + y;
+
+            var v = "123";
+            var x = this;
+        }
+
+    </script>
+</head>
+<body>
+    <form id="locationCategories" class="form-horizontal">
+        <fieldset>
+            <legend>Location Categories</legend>
+
+            <input type="text" id="val1" placeholder="0">
+            <input type="text" id="val2" placeholder="0">
+            <input type="button" onclick="Multiply()">
+            <p id="varOut">
+
+            </p>
+        </fieldset>
+    </form>
+</body>
+</html>

@@ -1,0 +1,49 @@
+﻿ form {
+    background-color: #F7CFC9;
+    color: #5A170D;
+}
+
+form fieldset legend {
+    color: #842213;
+    border-bottom: none;
+}
+
+.Red {
+    background-color: #FA4944;
+}
+
+.Red p, 
+.Red td,
+.Red a{
+    color: white;
+}
+
+.Active a {
+    color: #842213;
+}
+
+.Active {
+    background-color: #F1AA9F;
+    color: #842213;
+}
+
+.DarkRed {
+    background-color: #842213;
+}
+
+.DarkRed p,
+.DarkRed a, 
+.DarkRed h1,
+.DarkRed h2,
+.DarkRed h3,
+.DarkRed h4 {
+    color: white;
+}
+
+.Welcome {
+    color: #842213;
+}
+
+thead tr {
+    background-color: #DEDEDF;
+}

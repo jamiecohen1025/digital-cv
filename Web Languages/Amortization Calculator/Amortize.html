@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Amortization</title>
+    <link rel="stylesheet" href="./css/global.css" type="text/css" />
+    <link rel="stylesheet" href="./css/colors.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <script>
+        function Amortize_onClick() {
+            var div = document.getElementById("TableAmort");
+            var amountnck = document.getElementById("principal"); //nck = Not checked
+            var anInterestnck = document.getElementById("annualInterest");
+            var yearsnck = document.getElementById("numYears");
+
+            var amount = parseFloat(amountnck.value);
+            var anInterest = parseFloat(anInterestnck.value);
+            var years = parseInt(yearsnck.value);
+
+            if (isNaN(amount) || isNaN(anInterest) || isNaN(years)) {
+                var errorflag = document.createElement('p');
+                errorflag.innerHTML = "Error. Please input valid numbers";
+                div.appendChild(errorflag);
+            }
+            else {
+                var monthlyInterest = (anInterest / 100) / 12;
+                var periods = years * 12;
+                var pmt = (monthlyInterest * amount) / (1 - Math.pow((1 + monthlyInterest), (-periods)));
+
+                var newTable = document.createElement('table');
+                var thead = newTable.createTHead();
+                var count = 0;
+                var headerRow = thead.insertRow(0);
+
+                var header0 = document.createElement("th");
+                header0.innerHTML = "Beginning Balance";
+                headerRow.appendChild(header0);
+
+                var header1 = document.createElement("th");
+                header1.innerHTML = "Payment";
+                headerRow.appendChild(header1);
+
+                var header2 = document.createElement("th");
+                header2.innerHTML = "Interest";
+                headerRow.appendChild(header2);
+
+                var header3 = document.createElement("th");
+                header3.innerHTML = "Principal";
+                headerRow.appendChild(header3);
+
+                var header4 = document.createElement("th");
+                header4.innerHTML = "Balance";
+                headerRow.appendChild(header4);
+
+                var header5 = document.createElement("th");
+                header5.innerHTML = "Period";
+                headerRow.appendChild(header5);
+
+                var tbody = newTable.createTBody();
+
+                for (count = 1; count <= periods; count++) {
+                    var row = tbody.insertRow();
+                    var c0 = row.insertCell(0);
+                    c0.innerHTML = amount.toFixed(2);
+
+                    var c1 = row.insertCell(1);
+                    c1.innerHTML = pmt.toFixed(2);
+
+                    var c2 = row.insertCell(2);
+                    var interest = amount * monthlyInterest;
+                    c2.innerHTML = interest.toFixed(2);
+
+                    var c3 = row.insertCell(3);
+                    var principal = pmt - interest;
+                    c3.innerHTML = principal.toFixed(2);
+
+                    var c4 = row.insertCell(4);
+                    var amountEnd = amount - principal;
+                    c4.innerHTML = amountEnd.toFixed(2);
+                    amount = amountEnd;
+
+                    var c5 = row.insertCell(5);
+                    c5.innerHTML = count.toString();
+                }
+
+                RemoveAllChildren(TableAmort);
+                div.appendChild(newTable);
+
+                var formatTable = document.querySelector("div.TableAmort table");
+                formatTable.className = "table table-striped table-hover";
+            }
+        }
+
+        function RemoveAllChildren(argNode) {
+            while (argNode.firstChild) {
+                argNode.removeChild(argNode.firstChild);
+            }
+        }
+    </script>
+</head>
+<body class="container my-4">
+    <header>
+        <div class="Red">
+            <nav>
+                <table class="MainMenu">
+                    <tr>
+                        <td><button class="DarkRed" onclick="location.href='./Index.html'">Home</button></td>
+                        <td><button class="Active" onclick="location.href='./Amortize.html'">Amortize</button></td>
+                        <td><button class="DarkRed" onclick="location.href='./FutureValue.html'">Future Value</button></td>
+                    </tr>
+                </table>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <form class="form-horizonal" id="amortizeForm">
+            <fieldset>
+                <legend>Loan Amortization Schedule Calculator</legend>
+                <div class="form-group">
+                    <label for="principal" class="col-sm-3 col-form-label">Principal Loan Amount</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="principal" placeholder="$0.00" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="annualInterest" class="control-label col-sm-3">Annual Interest</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="annualInterest" placeholder="0.00% (10% input as 10)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="numYears" class="control-label col-sm-3">Loan Term in Years</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="numYears" placeholder="0" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-0 col-sm-12">
+                        <button type="button" class="Red" id="Amortize" onclick="Amortize_onClick()">Calculate</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <br />
+    <div id="TableAmort" class="TableAmort"></div>
+
+    <footer class="Red">
+        <img src="./images/UNRLogo.png" alt="UNRLogo" />
+        <table>
+            <tr>
+                <td>JamieCohen &copy;</td>
+                <td></td>
+                <td><a href="./images/amortizeValidate.png">Validate</a></td>
+            </tr>
+        </table>
+    </footer>
+</body>
+</html>

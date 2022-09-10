@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>NWSQuery1</title>
+    <link rel="stylesheet" href="./css/global.css" type="text/css" />
+    <link rel="stylesheet" href="./css/colors.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script>
+    var req = XMLHttpRequest;
+
+    function GetCategories_OnClick() {
+        
+        req = new XMLHttpRequest();
+        var base_uri = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locationcategories";
+        req.open("GET", base_uri, true);
+        req.setRequestHeader("token", "vczOaCmkCxBVQHkKGXeVcGoNcrzjdBab");
+        req.onreadystatechange = GetCategoriesCallback;
+        req.send();
+    }
+
+    function GetCategoriesCallback() {
+        if (this.readyState == 4 && this.status == 200) {
+            var MyText = req.responseText;
+            var obj = JSON.parse(MyText);
+            var resultCount = obj.results.length;
+
+            var select = document.getElementById("locationSelect");
+
+            for (i = 0; i < resultCount; i++) {
+                var option = document.createElement("option");
+                var value = obj.results[i].id;
+                option.text = value;
+                select.add(option);
+            }
+
+        }
+    }
+
+    function Table_OnChange() {
+        req = new XMLHttpRequest();
+
+        var limitInput = document.getElementById("limit");
+        var offsetInput = document.getElementById("offset");
+        var selectCategory = document.getElementById("locationSelect").value;
+
+        var limit = limitInput.toString;
+        var offset = offsetInput.toString;
+
+        var base_uri = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locations";
+        base_uri += "?locationcategoryid=" + selectCategory;
+        if (limit != 0) {
+            if (offset != 0) {
+                base_uri += "&offset=" + offsetInput.value;
+            }
+            base_uri += "&limit=" + limitInput.value;
+            }
+
+
+        req.open("GET", base_uri, true);
+        req.setRequestHeader("token", "vczOaCmkCxBVQHkKGXeVcGoNcrzjdBab");
+        req.onreadystatechange = LocationsCallback;
+        req.send();
+    }
+
+    function LocationsCallback() {
+        if (this.readyState == 4 && this.status == 200) {
+            
+            var MyText = req.responseText;
+            var obj = JSON.parse(MyText);
+            var resultCount = obj.results.length;
+            
+            var limitInput = document.getElementById("limit");
+            var offsetInput = document.getElementById("offset");
+
+            var limit = parseFloat(limitInput.value);
+            var offset = parseFloat(offsetInput.value);
+
+            var div;
+            div = document.getElementById("Output");
+
+            var newTable = document.createElement('table');
+            var thead = newTable.createTHead();
+            var count = 0;
+            var headerRow = thead.insertRow(0);
+
+            var header0 = document.createElement("th");
+            header0.innerHTML = "Location ID";
+            headerRow.appendChild(header0);
+
+            var header1 = document.createElement("th");
+            header1.innerHTML = "Name";
+            headerRow.appendChild(header1);
+
+            var header2 = document.createElement("th");
+            header2.innerHTML = "Start Date";
+            headerRow.appendChild(header2);
+
+            var header3 = document.createElement("th");
+            header3.innerHTML = "End Date";
+            headerRow.appendChild(header3);
+
+
+            var tbody = newTable.createTBody();
+
+            //var length = offset + limit;
+
+            //for (i = offset; i < length; i++) {
+            for (i = count; i < resultCount; i++) {
+                var row = tbody.insertRow(i);
+
+                var cell0 = row.insertCell(0);
+                cell0.innerHTML = obj.results[i].id;
+
+                var cell1 = row.insertCell(1);
+                cell1.innerHTML = obj.results[i].name;
+
+                var cell2 = row.insertCell(2);
+                cell2.innerHTML = obj.results[i].mindate;
+
+                var cell3 = row.insertCell(3);
+                cell3.innerHTML = obj.results[i].maxdate;
+                count++;
+            }
+
+            RemoveAllChildren(Output);
+            div.appendChild(newTable);
+
+            var selection = document.getElementById("locationSelect").value;
+            document.getElementById("Selection").innerHTML = "You selected: " + selection;
+
+            var formatTable = document.querySelector("div.Output table");
+            formatTable.className = "table table-striped table-hover";
+        }
+    }
+
+    function RemoveAllChildren(argNode) {
+        while (argNode.firstChild) {
+            argNode.removeChild(argNode.firstChild);
+        }
+    }
+</script>
+</head>
+<body class="container my-4">
+    <header>
+        <div class="Red">
+            <nav>
+                <table class="MainMenu">
+                    <tr>
+                        <td><button class="DarkRed" onclick="location.href='./Index.html'">Home</button></td>
+                        <td><button class="DarkRed" onclick="location.href='./WeatherStations.html'">Weather Stations</button></td>
+                        <td><button class="Active" onclick="location.href='./NWSQuery1.html'">NWSQuery1</button></td>
+                    </tr>
+                </table>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <form id="locationCategories" class="form-horizontal">
+            <fieldset>
+                <legend>Location Categories</legend>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <input type="button" class="btnGetCategories" onclick="GetCategories_OnClick();" value="Get Location Categories">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="limit">Record limit</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="limit" onchange="Table_OnChange()" placeholder="Eg. 100; OPTIONAL: enter 0 if no limit is desired">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="offset">Query offset:</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="offset" onchange="Table_OnChange()" placeholder="Eg. 50; OPTIONAL: enter 0 if no offset is desired">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="locationSelect">Select Location</label>
+                    <div class="col-sm-10">
+                        <select id="locationSelect" class="locationSelect" style="width:200px" onchange="Table_OnChange()">
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        <br />
+        <div id="Selection" class="Selection"></div>
+        <div id="Output" class="Output"></div>
+    </div>
+
+    <footer class="Red">
+        <img src="./images/UNRLogo.png" alt="UNRLogo" />
+        <table>
+            <tr>
+                <td>JamieCohen &copy;</td>
+                <td></td>
+                <td><a href="./images/NWSValidate.png">Validate</a></td>
+            </tr>
+        </table>
+    </footer>
+</body>
+</html>

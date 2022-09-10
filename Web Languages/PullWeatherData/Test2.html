@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <script>
+
+function CreateList() {
+
+    var div;
+    div = document.getElementById("divPlaceholder");
+
+    var newList = document.createElement('ul');
+
+    for (i = 0; i < 50; i++) {
+        var j = i + 1;
+        var newitem = document.createElement('li');
+        newitem.innerHTML = "Item " + j;
+        newList.appendChild(newitem);
+    }
+
+    div.appendChild(newList);
+}
+    </script>
+    <div>
+        <form>
+            <input type="button" onclick="CreateList()">
+        </form>
+    </div>
+    <div id="divPlaceholder"></div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Weather Stations</title>
+    <link rel="stylesheet" href="./css/global.css" type="text/css" />
+    <link rel="stylesheet" href="./css/colors.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script>
+        var req = XMLHttpRequest;
+
+        function WeatherStations_OnClick() {
+
+            var base_uri = "https://w1.weather.gov/xml/current_obs/index.xml";
+
+
+            req = new XMLHttpRequest();
+            req.open("GET", base_uri, true);
+            req.setRequestHeader("Accept", "text / html, application / xhtml + xml, application / xml; q = 0.9,*/*;q=0.8");
+
+            req.onreadystatechange = GetAjaxCallback;
+            req.send();
+        }
+
+        function GetAjaxCallback() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                var MyXML = req.responseXML;
+
+                var limitInput = document.getElementById("limit");
+                var offsetInput = document.getElementById("offset");
+
+                var div;
+                div = document.getElementById("Output");
+
+                var newTable = document.createElement('table');
+                var thead = newTable.createTHead();
+                var count = 0;
+                var headerRow = thead.insertRow(0);
+
+                var header0 = document.createElement("th");
+                header0.innerHTML = "Station ID";
+                headerRow.appendChild(header0);
+
+                var header1 = document.createElement("th");
+                header1.innerHTML = "State";
+                headerRow.appendChild(header1);
+
+                var header2 = document.createElement("th");
+                header2.innerHTML = "Latitude";
+                headerRow.appendChild(header2);
+
+                var header3 = document.createElement("th");
+                header3.innerHTML = "Longitude";
+                headerRow.appendChild(header3);
+
+                var stations = MyXML.getElementsByTagName("station");
+
+                var stateInput = document.getElementById("State").value;
+                var stateQ = stateInput.toString();
+                var tbody = newTable.createTBody();
+
+                for (i = 0; i < stations.length; i++) {
+                    var state = stations[i].getElementsByTagName("state")[0].innerHTML;
+                    if (state == stateQ) {
+
+                        var stationid = stations[i].getElementsByTagName("station_id")[0].innerHTML;
+                        var latitude = stations[i].getElementsByTagName("latitude")[0].innerHTML;
+                        var longitude = stations[i].getElementsByTagName("longitude")[0].innerHTML;
+
+                        var row = tbody.insertRow(count);
+
+                        var cell0 = row.insertCell(0);
+                        cell0.innerHTML = stationid.toString();
+
+                        var cell1 = row.insertCell(1);
+                        cell1.innerHTML = state.toString();
+
+                        var cell2 = row.insertCell(2);
+                        cell2.innerHTML = latitude.toString();
+
+                        var cell3 = row.insertCell(3);
+                        cell3.innerHTML = longitude.toString();
+                        count++;
+                    }
+                }
+
+                RemoveAllChildren(Output);
+
+                if (count == 0) {
+                    var errorflag = document.createElement('p');
+                    errorflag.innerHTML = "No data was returned for this State.";
+                    div.appendChild(errorflag);
+                }
+                else {
+                    div.appendChild(newTable);
+                }
+
+
+                var formatTable = document.querySelector("div.Output table");
+               formatTable.className = "table table-striped table-hover";
+            }
+        }
+
+        function RemoveAllChildren(argNode) {
+            while (argNode.firstChild) {
+                argNode.removeChild(argNode.firstChild);
+            }
+        }
+
+    </script>
+</head>
+<body class="container my-4">
+    <header>
+        <div class="Red">
+            <nav>
+                <table class="MainMenu">
+                    <tr>
+                        <td><button class="DarkRed" onclick="location.href='./Index.html'">Home</button></td>
+                        <td><button class="Active" onclick="location.href='./WeatherStations.html'">Weather Stations</button></td>
+                        <td><button class="DarkRed" onclick="location.href='./NWSQuery1.html'">NWSQuery1</button></td>
+                    </tr>
+                </table>
+            </nav>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <form>
+            <fieldset id="weatherStations" class="form-horizontal">
+                <legend>Weather Stations</legend>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="State">State:</label>
+                    <div class="col-sm-9">
+                        <select id="State" onchange="selState_OnChange()">
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="button" onclick="WeatherStations_OnClick()" value="Get Weather Stations">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+    <div id="Output" class="Output"></div>
+
+    <footer class="Red">
+        <img src="./images/UNRLogo.png" alt="UNRLogo" />
+        <table>
+            <tr>
+                <td>JamieCohen &copy;</td>
+                <td></td>
+                <td><a href="./images/WeatherStationsValidate.png">Validate</a></td>
+            </tr>
+        </table>
+    </footer>
+</body>
+</html>

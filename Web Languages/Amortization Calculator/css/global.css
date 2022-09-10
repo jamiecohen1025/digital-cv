@@ -1,0 +1,54 @@
+﻿form {
+    margin-top: 20px;
+    padding: 5px;
+}
+
+.MainMenu {
+    margin: auto;
+    text-align: center;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+table.MainMenu td {
+    text-align: center;
+    height: 40px;
+    font-weight: 700;
+    padding: 10px;
+}
+
+footer table {
+    letter-spacing: 1px;
+    height: 40px;
+}
+
+footer a {
+    text-decoration: underline;
+}
+
+footer img {
+    height: 35px;
+    float: left;
+    padding-left: 0.25in;
+    padding-right: 10px;
+    padding-top: 2px;
+}
+
+.Welcome {
+    text-align: center;
+}
+
+button {
+    border-radius: 10px;
+    border-style: none;
+}
+
+.MainMenu button {
+    border-radius: 10px;
+    border-style: none;
+    width: 150px;
+}
+div {
+    padding: 5px;
+}
+

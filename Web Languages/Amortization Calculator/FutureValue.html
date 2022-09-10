@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Future Value</title>
+    <link rel="stylesheet" href="./css/global.css" type="text/css" />
+    <link rel="stylesheet" href="./css/colors.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script>
+        function FV_onClick() {
+            var div = document.getElementById("FVOutputTable");
+            var initialInvestmentnck = document.getElementById("initialInvestment"); //nck = Not checked
+            var monthlyDepositnck = document.getElementById("monthlyDeposit");
+            var annualInterestRatenck = document.getElementById("annualInterestRate");
+            var investmentTermnck = document.getElementById("InvestmentTerm");
+
+            var initialInvest = parseFloat(initialInvestmentnck.value);
+            var monthDeposit = parseFloat(monthlyDepositnck.value);
+            var anInterest = parseInt(annualInterestRatenck.value);
+            var years = parseInt(investmentTermnck.value);
+
+            if (isNaN(initialInvest) || isNaN(monthDeposit) || isNaN(anInterest) || isNaN(years)) {
+                var errorflag = document.createElement('p');
+                errorflag.innerHTML = "Error. Please input valid numbers";
+                div.appendChild(errorflag);
+            }
+            else {
+                var monthlyInterest = (anInterest / 100) / 12;
+                var periods = years * 12;
+
+                var newTable = document.createElement('table');
+                var thead = newTable.createTHead();
+                var count = 0;
+                var headerRow = thead.insertRow(0);
+
+                var header0 = document.createElement("th");
+                header0.innerHTML = "Period";
+                headerRow.appendChild(header0);
+
+                var header1 = document.createElement("th");
+                header1.innerHTML = "Present Value";
+                headerRow.appendChild(header1);
+
+                var header2 = document.createElement("th");
+                header2.innerHTML = "Deposit";
+                headerRow.appendChild(header2);
+
+                var header3 = document.createElement("th");
+                header3.innerHTML = "Interest";
+                headerRow.appendChild(header3);
+
+                var header4 = document.createElement("th");
+                header4.innerHTML = "New Balance";
+                headerRow.appendChild(header4);
+
+                var tbody = newTable.createTBody();
+
+                for (count = 1; count <= periods; count++) {
+                    var row = tbody.insertRow();
+                    var c0 = row.insertCell(0);
+                    c0.innerHTML = count.toString();
+
+                    var c1 = row.insertCell(1);
+                    c1.innerHTML = initialInvest.toFixed(2);
+
+                    var c2 = row.insertCell(2);
+                    c2.innerHTML = monthDeposit.toFixed(2);
+
+                    var c3 = row.insertCell(3);
+                    var interest = initialInvest * monthlyInterest;
+                    c3.innerHTML = interest.toFixed(2);
+
+                    var c4 = row.insertCell(4);
+                    var endInvest = initialInvest + monthDeposit + interest;
+                    c4.innerHTML = endInvest.toFixed(2);
+                    initialInvest = endInvest;
+                }
+
+                RemoveAllChildren(FVOutputTable);
+                div.appendChild(newTable);
+
+                var formatTable = document.querySelector("div.FVOutputTable table");
+                formatTable.className = "table table-striped table-hover";
+            }
+        }
+
+        function RemoveAllChildren(argNode) {
+            while (argNode.firstChild) {
+                argNode.removeChild(argNode.firstChild);
+            }
+        }
+    </script>
+</head>
+<body class="container my-4">
+    <header>
+        <div class="Red">
+            <nav>
+                <table class="MainMenu ">
+                    <tr>
+                        <td><button class="DarkRed" onclick="location.href='./Index.html'">Home</button></td>
+                        <td><button class="DarkRed" onclick="location.href='./Amortize.html'">Amortize</button></td>
+                        <td><button class="Active" onclick="location.href='./FutureValue.html'">Future Value</button></td>
+                    </tr>
+                </table>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <form class="form-horizonal" id="FVForm">
+            <fieldset>
+                <legend>Future Value Schedule Calculator</legend>
+                <div class="form-group">
+                    <label for="initialInvestment" class="control-label col-sm-3">Initial Investment</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="initialInvestment" placeholder="$0.00" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="monthlyDeposit" class="control-label col-sm-3">MonthlyDeposit</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="monthlyDeposit" placeholder="$0.00" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="annualInterestRate" class="control-label col-sm-3">Annual Interest Rate</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="annualInterestRate" placeholder="0.00% (10% input as 10)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="InvestmentTerm" class="control-label col-sm-3">Investment Term (in Years)</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="InvestmentTerm" placeholder="0" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-0 col-sm-12">
+                        <button type="button" class="Red" id="FV" onclick="FV_onClick()">Calculate</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <br />
+    <div id="FVOutputTable" class="FVOutputTable"></div>
+
+    <footer class="Red">
+        <img src="./images/UNRLogo.png" alt="UNRLogo" />
+        <table>
+            <tr>
+                <td>JamieCohen &copy;</td>
+                <td></td>
+                <td><a href="./images/fvValidate.png">Validate</a></td>
+            </tr>
+        </table>
+    </footer>
+</body>
+</html>
